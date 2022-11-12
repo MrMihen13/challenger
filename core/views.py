@@ -9,6 +9,7 @@ from rest_framework import response, status, permissions
 from core.models import Markdown, Document, StickerPack, Sticker, VoiceMessage
 from core.serializers import DocumentSerializer, MarkdownSerializer, VoiceMessageSerializer
 from core.third_party_api.documents_api import DocumentAPI
+from core.third_party_api.alphavantage_api import AlphavantageAPI
 from core.utils.formatters import stickers_pack_formatter
 
 
@@ -112,4 +113,78 @@ class StickersApiView(views.APIView):
 
 
 class VoiceMessageApiView(views.APIView):
-    ...
+    @swagger_auto_schema(
+        operation_description="Save message",
+        request_body=openapi.Schema(
+            description="Markdown text",
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'message': openapi.Schema(type=openapi.TYPE_FILE),
+            },
+            required=['message'],
+        ),
+        responses={
+            201: openapi.Response(
+                description='Markdown data',
+                schema=MarkdownSerializer()
+            ),
+            400: openapi.Response(
+                description='Bad request'
+            )
+        }
+    )
+    def post(self, request, dialogId):
+        for filename, file in request.FILES.iteritems():
+            voice = VoiceMessage()
+            voice.message = file
+            voice.user = self.request.user
+            voice.dialogId = dialogId
+            voice.save()
+        return response.Response(status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_description="Get Voice message packs",
+        manual_parameters=[
+            openapi.Parameter(
+                type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, name='id', required=True,
+                description='Id'
+            )
+        ],
+        responses={
+            201: openapi.Response(
+                description='Voice message data',
+                schema=VoiceMessageSerializer()
+            )
+        }
+    )
+    def get(self, request, dialogId=None):
+        voice_message_id = request.query_params.get('id', None)
+
+        voice_messages = VoiceMessage.objects.filter(dialogId=dialogId).all()
+
+        if voice_messages:
+            voice_messages = voice_messages.filter(id=voice_message_id)
+            voice = VoiceMessageSerializer(voice_messages, many=True)
+        else:
+            voice = VoiceMessageSerializer(voice_messages)
+
+        return response.Response(voice.data, status=status.HTTP_200_OK)
+
+
+class GetNewsApiView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+
+    @swagger_auto_schema(
+        operation_description="Get news data",
+        responses={
+            201: openapi.Response(
+                description='News data',
+            )
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        alphavantage_api = AlphavantageAPI()
+        data = alphavantage_api.get_news()
+
+        return response.Response(data=data, status=status.HTTP_200_OK)
+

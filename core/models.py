@@ -13,16 +13,26 @@ class User(models.Model):
     userId = models.BigAutoField(primary_key=True)
     role = models.CharField(max_length=10, choices=RoleChoices.choices, null=False, blank=False, verbose_name='Role')
 
+    def __str__(self):
+        return self.userId
+
 
 class Document(models.Model):
+    name = models.CharField(max_length=128, null=True, blank=True, unique=True)
     image = models.ImageField(
         upload_to=path_to_widget, blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Markdown(models.Model):
     text = models.TextField(null=False, blank=False)
+
+    def __str__(self):
+        return self.pk
 
 
 class VoiceMessage(models.Model):
@@ -30,9 +40,15 @@ class VoiceMessage(models.Model):
     message = models.FileField(upload_to=path_to_voice_message,
                                validators=[FileExtensionValidator(allowed_extensions=['mp3'])])
 
+    def __str__(self):
+        return self.pk
+
 
 class StickerPack(models.Model):
     name = models.CharField(max_length=36, blank=False, null=False, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Sticker(models.Model):
@@ -42,14 +58,5 @@ class Sticker(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
     )
 
-# class Message(models.Model):
-#     class TypeMessageChoice(models.TextChoices):
-#         TEXT = "TEXT"
-#         MEDIA = "MEDIA"
-#         WIDGET = "WIDGET"
-#
-#     dialogId = models.IntegerField(blank=False)
-#     text = models.TextField(blank=False)
-#     messageType = models.CharField(max_length=32, choices=TypeMessageChoice.choices)
-#     data = models.JSONField(blank=True)
-#     mediaUrl = models.URLField(blank=True)
+    def __str__(self):
+        return self.pk

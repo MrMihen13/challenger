@@ -1,18 +1,28 @@
 from django.db import models
+import uuid
 
 
-# Create your models here.
+def uniqie_name():
+    name = str(uuid.uuid4())
+    return f'{name}'
+
+
 class User(models.Model):
     userId = models.BigAutoField(primary_key=True)
-    avatar = models.URLField()
-    surname = models.CharField(max_length=128)
-    name = models.CharField(max_length=128)
-    middleName = models.CharField(max_length=128)
 
 
 class Widget(models.Model):
-    text = models.TextField()
-    image = models.TextField()
+    text = models.TextField(blank=False)
+    image = models.ImageField(upload_to=f'/images/{uniqie_name()}')
+
+
+class Sticker(models.Model):
+    image_sticker = models.ImageField(upload_to=f'/stickers/{uniqie_name()}')
+
+
+class StickerPack(models.Model):
+    name = models.CharField(max_length=36)
+    stickers = models.ManyToManyField(Sticker)
 
 
 class Message(models.Model):

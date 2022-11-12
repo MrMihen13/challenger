@@ -1,39 +1,46 @@
 from django.db import models
-import uuid
+from django.core.validators import FileExtensionValidator
 
-
-def unique_name():
-    name = str(uuid.uuid4())
-    return f'{name}'
+from core.utils.path_constructors import path_to_sticker, path_to_widget
+from core.validators import image_size_validator
 
 
 class User(models.Model):
+    class RoleChoices(models.TextChoices):
+        CLIENT = 'CLIENT'
+        OPERATOR = 'OPERATOR'
+
     userId = models.BigAutoField(primary_key=True)
+    role = models.CharField(max_length=10, choices=RoleChoices.choices, null=False, blank=False, verbose_name='Role')
 
 
 class Widget(models.Model):
     text = models.TextField(blank=False)
-    image = models.ImageField(upload_to=f'/images/{unique_name()}')
-
-
-class Sticker(models.Model):
-    image_sticker = models.ImageField(upload_to=f'/stickers/{unique_name()}')
+    image = models.ImageField(
+        upload_to=path_to_widget, blank=True, null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
+    )
 
 
 class StickerPack(models.Model):
-    name = models.CharField(max_length=36)
-    stickers = models.ManyToManyField(Sticker)
+    name = models.CharField(max_length=36, blank=False, null=False, unique=True)
 
 
-class Message(models.Model):
-    class TypeMessageChoice(models.TextChoices):
-        TEXT = "TEXT"
-        MEDIA = "MEDIA"
-        WIDGET = "WIDGET"
+class Sticker(models.Model):
+    sticker_pack = models.ForeignKey(StickerPack, on_delete=models.CASCADE)
+    image_sticker = models.ImageField(
+        upload_to=path_to_sticker, blank=True, null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
+    )
 
-    dialogId = models.IntegerField(blank=False)
-    text = models.TextField(blank=False)
-    messageType = models.CharField(max_length=32, choices=TypeMessageChoice.choices)
-    data = models.JSONField(blank=True)
-    mediaUrl = models.URLField(blank=True)
-
+# class Message(models.Model):
+#     class TypeMessageChoice(models.TextChoices):
+#         TEXT = "TEXT"
+#         MEDIA = "MEDIA"
+#         WIDGET = "WIDGET"
+#
+#     dialogId = models.IntegerField(blank=False)
+#     text = models.TextField(blank=False)
+#     messageType = models.CharField(max_length=32, choices=TypeMessageChoice.choices)
+#     data = models.JSONField(blank=True)
+#     mediaUrl = models.URLField(blank=True)

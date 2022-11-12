@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
-from core.utils.path_constructors import path_to_sticker, path_to_widget
+from core.utils.path_constructors import path_to_sticker, path_to_widget, path_to_voice_message
 from core.validators import image_size_validator
 
 
@@ -14,12 +14,21 @@ class User(models.Model):
     role = models.CharField(max_length=10, choices=RoleChoices.choices, null=False, blank=False, verbose_name='Role')
 
 
-class Widget(models.Model):
-    text = models.TextField(blank=False)
+class Document(models.Model):
     image = models.ImageField(
         upload_to=path_to_widget, blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
     )
+
+
+class Markdown(models.Model):
+    text = models.TextField(null=False, blank=False)
+
+
+class VoiceMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.FileField(upload_to=path_to_voice_message,
+                               validators=[FileExtensionValidator(allowed_extensions=['mp3'])])
 
 
 class StickerPack(models.Model):

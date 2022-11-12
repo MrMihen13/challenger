@@ -112,3 +112,7 @@ MEDIA_URL = '/media/'
 
 # Путь хранения картинок
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# alphavantage settings
+
+ALPHAVANTAGE_APIKEY = os.environ['ALPHAVANTAGE_APIKEY']

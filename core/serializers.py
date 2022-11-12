@@ -18,12 +18,18 @@ class StickerPackSerializer(serializers.ModelSerializer):
 
 
 class MarkdownSerializer(serializers.ModelSerializer):
-    ...  # TODO fields all
+    class Meta:
+        model = Markdown
+        fields = ['__all__']
 
 
 class VoiceMessageSerializer(serializers.ModelSerializer):
-    ...  # TODO fields all
+    class Meta:
+        model = VoiceMessage
+        fields = ['__all__']
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    ...  # TODO fields all
+    class Meta:
+        model = Document
+        fields = ['__all__']

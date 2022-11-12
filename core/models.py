@@ -18,7 +18,7 @@ class User(models.Model):
         return True
 
     def __str__(self):
-        return self.userId
+        return str(self.userId)
 
 
 class Document(models.Model):
@@ -36,7 +36,7 @@ class Markdown(models.Model):
     text = models.TextField(null=False, blank=False)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class VoiceMessage(models.Model):
@@ -46,7 +46,7 @@ class VoiceMessage(models.Model):
                                validators=[FileExtensionValidator(allowed_extensions=['mp3'])])
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class StickerPack(models.Model):
@@ -64,4 +64,4 @@ class Sticker(models.Model):
     )
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)

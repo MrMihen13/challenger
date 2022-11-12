@@ -2,7 +2,7 @@ from django.db import models
 import uuid
 
 
-def uniqie_name():
+def unique_name():
     name = str(uuid.uuid4())
     return f'{name}'
 
@@ -13,11 +13,11 @@ class User(models.Model):
 
 class Widget(models.Model):
     text = models.TextField(blank=False)
-    image = models.ImageField(upload_to=f'/images/{uniqie_name()}')
+    image = models.ImageField(upload_to=f'/images/{unique_name()}')
 
 
 class Sticker(models.Model):
-    image_sticker = models.ImageField(upload_to=f'/stickers/{uniqie_name()}')
+    image_sticker = models.ImageField(upload_to=f'/stickers/{unique_name()}')
 
 
 class StickerPack(models.Model):

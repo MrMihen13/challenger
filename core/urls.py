@@ -8,5 +8,6 @@ urlpatterns = [
     path('voice_messages/<int:dialogId>', views.VoiceMessageApiView.as_view()),
     path('stickers', views.StickersApiView.as_view()),
     path('markdown', views.MarkdownApiView.as_view()),
-    path('news', views.GetNewsApiView.as_view())
+    path('news', views.GetNewsApiView.as_view()),
+    path('trends', views.GetTrendsApiView.as_view())
 ]

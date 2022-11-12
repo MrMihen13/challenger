@@ -188,3 +188,20 @@ class GetNewsApiView(views.APIView):
 
         return response.Response(data=data, status=status.HTTP_200_OK)
 
+
+class GetTrendsApiView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+
+    @swagger_auto_schema(
+        operation_description="Get news data",
+        responses={
+            201: openapi.Response(
+                description='News data',
+            )
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        alphavantage_api = AlphavantageAPI()
+        data = alphavantage_api.get_trends()
+
+        return response.Response(data=data, status=status.HTTP_200_OK)

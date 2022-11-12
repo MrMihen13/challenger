@@ -10,6 +10,6 @@ def verify_user(jwt_token: str) -> bool | Exception:
     response = otkrytie_api.verification(jwt_token)
 
     if 'userId' in response.keys():
-        return True
+        return response
 
     raise exceptions.AuthenticationFailed(response)

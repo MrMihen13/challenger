@@ -13,6 +13,10 @@ class User(models.Model):
     userId = models.BigAutoField(primary_key=True)
     role = models.CharField(max_length=10, choices=RoleChoices.choices, null=False, blank=False, verbose_name='Role')
 
+    @property
+    def is_authenticated(self):
+        return True
+
     def __str__(self):
         return self.userId
 

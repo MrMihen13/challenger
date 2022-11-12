@@ -1,0 +1,1 @@
+web: gunicorn challenger.wsgi --log-file -

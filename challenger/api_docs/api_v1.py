@@ -5,10 +5,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Finance API",
+        title="Challenger API",
         default_version='v1',
         description="Test description",
-        contact=openapi.Contact(email="krpohg@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,

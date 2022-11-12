@@ -37,6 +37,7 @@ class Markdown(models.Model):
 
 class VoiceMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dialogId = models.IntegerField(null=False, blank=False)
     message = models.FileField(upload_to=path_to_voice_message,
                                validators=[FileExtensionValidator(allowed_extensions=['mp3'])])
 

@@ -10,26 +10,25 @@ class StickerSerializer(serializers.ModelSerializer):
 
 
 class StickerPackSerializer(serializers.ModelSerializer):
-    stickers_serial = StickerSerializer(many=True)
 
     class Meta:
         model = StickerPack
-        fields = ['name', 'stickers_serial']
+        fields = ['name', ]
 
 
 class MarkdownSerializer(serializers.ModelSerializer):
     class Meta:
         model = Markdown
-        fields = ['__all__']
+        fields = ['text', ]
 
 
 class VoiceMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoiceMessage
-        fields = ['__all__']
+        fields = '__all__'
 
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ['__all__']
+        fields = '__all__'

@@ -19,4 +19,4 @@ class AlphavantageAPI:
         response = requests.get(url=self.url + params)
         data = response.json()
 
-        return json.loads(data)
+        return data

@@ -114,7 +114,7 @@ class StickersApiView(views.APIView):
         return response.Response(data=data, status=status.HTTP_200_OK)
 
 
-class VoiceMessageApiView(rf_view.APIView):
+class VoiceMessageApiView(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
     parser_classes = (FileUploadParser,)
 

@@ -4,7 +4,9 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework.generics import views
+from rest_framework import views as rf_view
 from rest_framework import response, status, permissions
+from rest_framework.parsers import FileUploadParser
 
 from core.models import Markdown, Document, StickerPack, Sticker, VoiceMessage
 from core.serializers import DocumentSerializer, MarkdownSerializer, VoiceMessageSerializer
@@ -52,9 +54,9 @@ class MarkdownApiView(views.APIView):
             description="Markdown text",
             type=openapi.TYPE_OBJECT,
             properties={
-                'text': openapi.Schema(type=openapi.TYPE_STRING),
+                'markdown_text': openapi.Schema(type=openapi.TYPE_STRING),
             },
-            required=['text'],
+            required=['markdown_text'],
         ),
         responses={
             201: openapi.Response(
@@ -67,9 +69,9 @@ class MarkdownApiView(views.APIView):
         }
     )
     def post(self, request, *args, **kwargs):
-        text = self.request.POST['text']
-        serializer = MarkdownSerializer(data=text)
-        if serializer.is_valid():
+        text = self.request.data
+        serializer = MarkdownSerializer(data={'text': text['markdown_text']})
+        if serializer.is_valid(raise_exception=True):
             return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,8 +90,8 @@ class MarkdownApiView(views.APIView):
             )
         }
     )
-    def get(self, request, file_id, *args, **kwargs):
-        queryset = get_object_or_404(Markdown, id=file_id)
+    def get(self, request, *args, **kwargs):
+        queryset = get_object_or_404(Markdown, id=self.request.query_params.get('id', None))
         file = MarkdownSerializer(queryset)
         return response.Response(data=file.data, status=status.HTTP_200_OK)
 
@@ -112,11 +114,14 @@ class StickersApiView(views.APIView):
         return response.Response(data=data, status=status.HTTP_200_OK)
 
 
-class VoiceMessageApiView(views.APIView):
+class VoiceMessageApiView(rf_view.APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    parser_classes = (FileUploadParser,)
+
     @swagger_auto_schema(
         operation_description="Post Voice message packs",
         request_body=openapi.Schema(
-            type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, name='id',
+            type=openapi.TYPE_FILE, in_=openapi.IN_QUERY, name='id',
             description='Id',
         ),
         responses={
@@ -130,13 +135,12 @@ class VoiceMessageApiView(views.APIView):
         }
     )
     def post(self, request, dialogId):
-        for filename, file in request.FILES.iteritems():
-            voice = VoiceMessage()
-            voice.message = file
-            voice.user = self.request.user
-            voice.dialogId = dialogId
-            voice.save()
-        return response.Response(status=status.HTTP_200_OK)
+        file_obj = self.request.data
+        data = dict(user=self.request.user, dialogId=dialogId, message=file_obj['file'])
+        serializer = VoiceMessageSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            return response.Response(status=status.HTTP_200_OK)
+        return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
         operation_description="Get Voice message packs",

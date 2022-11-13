@@ -121,10 +121,9 @@ class VoiceMessageApiView(views.APIView):
 
     @swagger_auto_schema(
         operation_description="Post Voice message packs",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_FILE, in_=openapi.IN_QUERY, name='id',
-            description='Id',
-        ),
+        manual_parameters=[
+            openapi.Parameter('file', openapi.IN_FORM, type=openapi.TYPE_FILE, description='Document to be uploaded', required=True),
+        ],
         responses={
             201: openapi.Response(
                 description='Voice message data',

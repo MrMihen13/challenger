@@ -6,7 +6,7 @@ from core.models import StickerPack, Sticker, VoiceMessage, Document, Markdown
 class StickerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sticker
-        fields = ['sticker_image']
+        fields = ['image_sticker']
 
 
 class StickerPackSerializer(serializers.ModelSerializer):

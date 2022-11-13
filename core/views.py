@@ -114,18 +114,14 @@ class StickersApiView(views.APIView):
 
 class VoiceMessageApiView(views.APIView):
     @swagger_auto_schema(
-        operation_description="Save message",
+        operation_description="Post Voice message packs",
         request_body=openapi.Schema(
-            description="Markdown text",
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'message': openapi.Schema(type=openapi.TYPE_FILE),
-            },
-            required=['message'],
+            type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, name='id',
+            description='Id',
         ),
         responses={
             201: openapi.Response(
-                description='Markdown data',
+                description='Voice message data',
                 schema=MarkdownSerializer()
             ),
             400: openapi.Response(
@@ -163,7 +159,8 @@ class VoiceMessageApiView(views.APIView):
         voice_messages = VoiceMessage.objects.filter(dialogId=dialogId).all()
 
         if voice_messages:
-            voice_messages = voice_messages.filter(id=voice_message_id)
+            if voice_message_id:
+                voice_messages = voice_messages.filter(id=voice_message_id)
             voice = VoiceMessageSerializer(voice_messages, many=True)
         else:
             voice = VoiceMessageSerializer(voice_messages)

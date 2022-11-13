@@ -16,6 +16,6 @@ def stickers_pack_formatter(stickers: QuerySet, stickers_packs: QuerySet) -> lis
 
         for sticker in _stickers:
             serializer = StickerSerializer(sticker)
-            data[name].append(serializer.data)
+            data[-1][name].append(serializer.data)
 
     return data

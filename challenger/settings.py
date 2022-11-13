@@ -21,7 +21,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = os.environ.get('DEBUG', False) == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -158,10 +158,10 @@ LOGGING = {
             'formatter': 'console'
         },
         'file': {
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'formatter': 'file',
-            'filename': 'debug.log'
+            'filename': '/debug.log'
         }
     },
 }

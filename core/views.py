@@ -72,6 +72,7 @@ class MarkdownApiView(views.APIView):
         text = self.request.data
         serializer = MarkdownSerializer(data={'text': text['markdown_text']})
         if serializer.is_valid(raise_exception=True):
+            serializer.save()
             return response.Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return response.Response(status=status.HTTP_400_BAD_REQUEST)
 

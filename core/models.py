@@ -23,10 +23,7 @@ class User(models.Model):
 
 class Document(models.Model):
     name = models.CharField(max_length=128, null=True, blank=True, unique=True)
-    image = models.ImageField(
-        upload_to=path_to_widget, blank=True, null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['jpg']), image_size_validator]
-    )
+    image = models.ImageField(upload_to=path_to_widget, blank=True, null=True)
 
     def __str__(self):
         return self.name

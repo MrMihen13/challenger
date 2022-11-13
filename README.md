@@ -1,12 +1,15 @@
 # Challenger
 
 
-- [Technical requirements for developers](#technical-requirements-for-developers)
 - [Local run](#local-run)
     - [Local run without](#local-run-without-docker-compose)
     - [Local run with docker-compose](#local-run-with-docker-compose)
 - [Project documentations](#project-documentation)
 - [Environments and dependencies](#environments-and-dependencies)
+
+-------------------------------------------------------------------------
+
+Front-end доступен [здесь](https://github.com/MrMihen13/challenger-fron)
 
 -------------------------------------------------------------------------
 

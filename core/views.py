@@ -6,7 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import views
 from rest_framework import views as rf_view
 from rest_framework import response, status, permissions
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser
 
 from core.models import Markdown, Document, StickerPack, Sticker, VoiceMessage
 from core.serializers import DocumentSerializer, MarkdownSerializer, VoiceMessageSerializer
@@ -114,9 +114,9 @@ class StickersApiView(views.APIView):
         return response.Response(data=data, status=status.HTTP_200_OK)
 
 
-class VoiceMessageApiView(rf_view.APIView):
+class VoiceMessageApiView(views.APIView):
     permission_classes = (permissions.IsAuthenticated, )
-    parser_classes = (FileUploadParser,)
+    parser_classes = (MultiPartParser, FileUploadParser)
 
     @swagger_auto_schema(
         operation_description="Post Voice message packs",
@@ -136,9 +136,10 @@ class VoiceMessageApiView(rf_view.APIView):
     )
     def post(self, request, dialogId):
         file_obj = self.request.data
-        data = dict(user=self.request.user, dialogId=dialogId, message=file_obj['file'])
+        data = dict(user=self.request.user.pk, dialogId=dialogId, message=file_obj['file'])
         serializer = VoiceMessageSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
+            serializer.save()
             return response.Response(status=status.HTTP_200_OK)
         return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
